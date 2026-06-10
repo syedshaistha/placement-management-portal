@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🎓 PlacementHub — College Placement Management Portal
 
 A full-stack mini project for college placements, built with **React + Node.js + MySQL**.
@@ -237,3 +238,6 @@ else → Return 403 "Not Eligible"
 | Auth      | JWT (jsonwebtoken), bcryptjs   |
 | Database  | MySQL 8 (mysql2 driver)        |
 | Dev tool  | nodemon                        |
+=======
+# placement-management-portal
+>>>>>>> 7d1e88b40d6f29a10467906a22405ee3840e6ae0
