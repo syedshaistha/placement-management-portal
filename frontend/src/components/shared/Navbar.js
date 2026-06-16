@@ -78,6 +78,12 @@ const Navbar = () => {
                 <li className="nav-item">
                   <Link className="nav-link" to="/admin/applications">Applications</Link>
                 </li>
+                <li>
+                  <Link to="/admin/analytics">Analytics</Link>
+                </li>
+                <li>
+                  <Link to="/admin/export">Export</Link>
+                </li>
                 <li className="nav-item ms-2">
                   <span className="badge bg-warning text-dark me-2">Admin</span>
                   <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>Logout</button>

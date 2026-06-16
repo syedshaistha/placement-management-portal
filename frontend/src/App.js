@@ -34,6 +34,9 @@ import Students from './pages/admin/Students';
 import AdminCompanies from './pages/admin/Companies';
 import AdminApplications from './pages/admin/Applications';
 
+import PlacementAnalytics from './pages/admin/PlacementAnalytics';
+import ExportReports from './pages/admin/ExportReports';
+
 function App() {
   return (
     <AuthProvider>
@@ -69,6 +72,13 @@ function App() {
           } />
           <Route path="/admin/applications" element={
             <ProtectedRoute requiredRole="admin"><AdminApplications /></ProtectedRoute>
+          } />
+
+          <Route path="/admin/analytics" element={
+            <ProtectedRoute requiredRole="admin"><PlacementAnalytics /></ProtectedRoute>
+          } />
+          <Route path="/admin/export" element={
+            <ProtectedRoute requiredRole="admin"><ExportReports /></ProtectedRoute>
           } />
 
           {/* Fallback */}

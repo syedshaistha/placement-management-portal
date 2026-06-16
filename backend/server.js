@@ -20,6 +20,9 @@ app.use('/api/auth',    require('./routes/auth'));
 app.use('/api/student', require('./routes/student'));
 app.use('/api/admin',   require('./routes/admin'));
 
+app.use('/api/analytics', require('./placement-analytics/analyticsRoutes'));
+app.use('/api/export', require('./export-reports/exportRoutes'));
+
 // ─── Health Check ─────────────────────────────
 app.get('/', (req, res) => {
   res.json({ message: '🎓 Placement Portal API is running!', status: 'OK' });
