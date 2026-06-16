@@ -1,144 +1,158 @@
-/* placement-analytics/PlacementAnalytics.css */
+/* PlacementAnalytics.css — v3 — aligned with globals design system */
 
-/* ── Page wrapper ── */
 .analytics-page {
-  background: #f0f4ff;
+  background: var(--bg-page, #f0f3fa);
   min-height: 100vh;
 }
 
-/* ── Header banner ── */
+/* ── Page header ── */
 .analytics-header {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  background: linear-gradient(145deg, #111827 0%, #1e2d5a 55%, #263a6e 100%);
   color: #fff;
   padding: 28px 0 24px;
+  position: relative;
+  overflow: hidden;
 }
+.analytics-header::before {
+  content: '';
+  position: absolute; top: -80px; right: -60px;
+  width: 280px; height: 280px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(79,98,212,0.20) 0%, transparent 70%);
+  pointer-events: none;
+}
+.analytics-header::after {
+  content: '';
+  position: absolute; bottom: -70px; left: -40px;
+  width: 200px; height: 200px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(13,148,136,0.14) 0%, transparent 70%);
+  pointer-events: none;
+}
+.analytics-header-inner { position: relative; z-index: 1; }
 .analytics-header h4 {
-  font-weight: 700;
-  margin-bottom: 4px;
-  letter-spacing: -0.3px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700; font-size: 1.25rem;
+  margin-bottom: 4px; color: #fff; letter-spacing: -0.3px;
 }
-.analytics-header p {
-  color: rgba(255, 255, 255, 0.65);
-  margin: 0;
-  font-size: 0.88rem;
-}
+.analytics-header p { color: rgba(255,255,255,0.58); margin: 0; font-size: 0.84rem; }
 
 /* ── Stat cards ── */
 .stat-card {
-  border: none;
+  background: #fff;
+  border: 1px solid #e2e8f0;
   border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  box-shadow: 0 2px 8px rgba(15,23,42,0.07);
+  transition: transform 0.20s ease, box-shadow 0.20s ease, border-color 0.20s ease;
   overflow: hidden;
+  position: relative;
+  height: 100%;
+}
+.stat-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--stat-top-color, #4f62d4);
+  border-radius: 16px 16px 0 0;
 }
 .stat-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 10px 28px rgba(15,23,42,0.11);
+  border-color: rgba(79,98,212,0.12);
 }
-.stat-card .card-body {
-  padding: 24px;
-}
+.stat-card .card-body { padding: 20px 22px; }
 .stat-icon {
-  font-size: 1.6rem;
+  font-size: 1.3rem;
   border-radius: 12px;
-  padding: 10px;
+  padding: 9px 10px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 14px;
 }
 .stat-value {
-  font-size: 2rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 2.1rem;
   font-weight: 800;
   line-height: 1;
   margin-bottom: 4px;
+  letter-spacing: -0.6px;
 }
 .stat-label {
-  font-size: 0.8rem;
+  font-size: 0.71rem;
   color: #64748b;
-  font-weight: 500;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
   margin: 0;
 }
-.stat-sub {
-  font-size: 0.75rem;
-  margin-top: 4px;
-}
+.stat-sub { font-size: 0.74rem; margin-top: 5px; margin-bottom: 0; }
 
 /* ── Chart cards ── */
 .chart-card {
-  border: none;
+  border: 1px solid #e2e8f0;
   border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+  box-shadow: 0 2px 8px rgba(15,23,42,0.07);
   overflow: hidden;
+  background: #fff;
+  height: 100%;
 }
 .chart-card .card-header {
   background: #fff;
   border-bottom: 1px solid #f1f5f9;
-  padding: 18px 22px 14px;
+  padding: 16px 20px 13px;
+  display: flex; align-items: center; justify-content: space-between;
 }
 .chart-card .card-header h6 {
-  font-weight: 700;
-  color: #1a1a2e;
-  margin: 0;
-  font-size: 0.95rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700; color: #0f172a;
+  margin: 0; font-size: 0.9rem; letter-spacing: -0.1px;
 }
-.chart-card .card-header span {
-  font-size: 0.75rem;
-  color: #94a3b8;
-}
-.chart-card .card-body {
-  padding: 20px 22px;
-  background: #fff;
-}
-.chart-wrapper {
-  position: relative;
-  width: 100%;
-}
+.chart-card .card-header span { font-size: 0.74rem; color: #94a3b8; }
+.chart-card .card-body { padding: 18px 20px; background: #fff; }
+.chart-wrapper { position: relative; width: 100%; }
 
-/* ── Branch table ── */
+/* ── Branch/placement table ── */
+.branch-table { width: 100%; border-collapse: collapse; }
 .branch-table th {
-  font-size: 0.75rem;
+  font-size: 0.68rem;
   text-transform: uppercase;
   color: #64748b;
-  font-weight: 600;
+  font-weight: 700;
   background: #f8fafc;
   border-bottom: 1px solid #e2e8f0;
   padding: 10px 14px;
+  letter-spacing: 0.5px;
 }
 .branch-table td {
-  font-size: 0.85rem;
-  padding: 10px 14px;
+  font-size: 0.845rem;
+  padding: 11px 14px;
   border-bottom: 1px solid #f1f5f9;
   vertical-align: middle;
+  color: #334155;
 }
-.branch-table tr:last-child td {
-  border-bottom: none;
-}
+.branch-table tr:last-child td { border-bottom: none; }
+.branch-table tbody tr { transition: background 0.14s ease; }
+.branch-table tbody tr:hover { background: #f8fafc; }
 
-/* ── Loading spinner ── */
-.analytics-spinner {
-  min-height: 60vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* ── Placement rate ring ── */
+/* ── Rate display ── */
 .rate-badge {
-  display: inline-block;
-  font-size: 1.6rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.9rem;
   font-weight: 800;
-  color: #10b981;
+  color: #059669;
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+
+/* ── Loading ── */
+.analytics-spinner {
+  min-height: 64vh;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 16px;
 }
 
 /* ── Responsive ── */
 @media (max-width: 576px) {
-  .stat-value {
-    font-size: 1.6rem;
-  }
-  .chart-card .card-body {
-    padding: 14px;
-  }
+  .stat-value { font-size: 1.7rem; }
+  .chart-card .card-body { padding: 12px 10px; }
+  .branch-table th, .branch-table td { padding: 9px 10px; }
 }

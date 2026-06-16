@@ -10,6 +10,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'react-toastify/dist/ReactToastify.css';
 
+// Global design system
+import './styles/globals.css';
+
 // Context
 import { AuthProvider } from './context/AuthContext';
 

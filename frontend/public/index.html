@@ -3,8 +3,29 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#1a1a2e" />
-    <title>PlacementHub – College Placement Portal</title>
+    <meta name="theme-color" content="#141f3f" />
+    <meta name="description" content="PlacementHub – College Placement Management Portal" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎓</text></svg>" />
+    <title>PlacementHub</title>
+    <!-- Preconnect for fast font load -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Inter (body) + Plus Jakarta Sans (display) + JetBrains Mono (code/numbers) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+    <style>
+      /* Prevent FOUC */
+      html { visibility: hidden; }
+      html.fonts-loaded { visibility: visible; }
+    </style>
+    <script>
+      // Show page as soon as fonts are ready (or after 800ms fallback)
+      if (document.fonts) {
+        document.fonts.ready.then(() => document.documentElement.classList.add('fonts-loaded'));
+      } else {
+        document.documentElement.classList.add('fonts-loaded');
+      }
+      setTimeout(() => document.documentElement.classList.add('fonts-loaded'), 800);
+    </script>
   </head>
   <body>
     <div id="root"></div>

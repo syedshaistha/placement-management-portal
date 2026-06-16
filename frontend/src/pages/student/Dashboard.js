@@ -1,32 +1,26 @@
 // frontend/src/pages/student/Dashboard.js
-
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
 
+const STATUS_STYLES = {
+  'Applied':      { bg: '#dbeafe', color: '#1d4ed8', dot: '#3b82f6' },
+  'Under Review': { bg: '#fef3c7', color: '#92400e', dot: '#f59e0b' },
+  'Shortlisted':  { bg: '#d1fae5', color: '#065f46', dot: '#10b981' },
+  'Selected':     { bg: '#ede9fe', color: '#5b21b6', dot: '#7c3aed' },
+  'Rejected':     { bg: '#ffe4e6', color: '#9f1239', dot: '#e11d48' },
+};
+
 const StatCard = ({ icon, label, value, color, subtext }) => (
   <div className="col-sm-6 col-xl-3">
-    <div className="card border-0 shadow-sm h-100" style={{ borderRadius: '16px', overflow: 'hidden' }}>
-      <div className="card-body p-4">
-        <div className="d-flex align-items-center justify-content-between mb-3">
-          <div className="rounded-3 p-2" style={{ background: `${color}18`, fontSize: '1.5rem' }}>{icon}</div>
-          <span className="badge rounded-pill" style={{ background: `${color}18`, color: color, fontSize: '0.7rem' }}>STATS</span>
-        </div>
-        <h2 className="fw-bold mb-0" style={{ color }}>{value}</h2>
-        <p className="text-muted small mb-0">{label}</p>
-        {subtext && <p className="text-muted" style={{ fontSize: '0.75rem' }}>{subtext}</p>}
-      </div>
+    <div className="ph-stat-card" style={{ '--stat-accent': color }}>
+      <div className="ph-stat-icon" style={{ background: `${color}14` }}>{icon}</div>
+      <div className="ph-stat-value" style={{ color }}>{value}</div>
+      <p className="ph-stat-label">{label}</p>
+      {subtext && <p className="ph-stat-sub">{subtext}</p>}
     </div>
   </div>
 );
-
-const STATUS_STYLES = {
-  'Applied':      { bg: '#e3f2fd', color: '#1565c0' },
-  'Under Review': { bg: '#fff3e0', color: '#e65100' },
-  'Shortlisted':  { bg: '#e8f5e9', color: '#2e7d32' },
-  'Selected':     { bg: '#f3e5f5', color: '#6a1b9a' },
-  'Rejected':     { bg: '#ffebee', color: '#c62828' },
-};
 
 const StudentDashboard = () => {
   const [data, setData] = useState(null);
@@ -40,31 +34,56 @@ const StudentDashboard = () => {
   }, []);
 
   if (loading) return (
-    <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
-      <div className="spinner-border" style={{ color: '#5378ff' }} />
+    <div className="ph-loading">
+      <div className="ph-spinner" />
+      <span className="ph-loading-text">Loading dashboard…</span>
     </div>
   );
-  if (!data) return <div className="container py-5 text-center text-muted">Failed to load dashboard.</div>;
+  if (!data) return (
+    <div className="container py-5 text-center" style={{ color: '#94a3b8' }}>
+      Failed to load dashboard.
+    </div>
+  );
 
   const { student, stats } = data;
+  const cgpa = parseFloat(student.cgpa);
+  const cgpaColor = cgpa >= 8 ? '#059669' : cgpa >= 6 ? '#d97706' : '#e11d48';
+  const cgpaBg    = cgpa >= 8 ? '#d1fae5' : cgpa >= 6 ? '#fef3c7' : '#ffe4e6';
 
   return (
-    <div style={{ background: '#f8f9ff', minHeight: '100vh' }}>
-      {/* Header banner */}
-      <div className="py-4" style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%)', color: '#fff' }}>
-        <div className="container">
-          <div className="d-flex align-items-center justify-content-between flex-wrap gap-3">
-            <div>
-              <h4 className="fw-bold mb-1">👋 Hello, {student.name}!</h4>
-              <p className="mb-0 small" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                {student.branch} · CGPA: <strong style={{ color: '#7c9dff' }}>{student.cgpa}</strong>
-              </p>
+    <div style={{ background: 'var(--bg-page)', minHeight: '100vh' }}>
+
+      {/* Page header */}
+      <div className="ph-page-header">
+        <div className="container ph-page-header-content">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 14 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+              <div style={{
+                width: 44, height: 44,
+                background: 'linear-gradient(135deg, #4f62d4, #0d9488)',
+                borderRadius: 13,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '1.2rem', flexShrink: 0,
+                border: '2px solid rgba(255,255,255,0.18)',
+              }}>
+                {student.name?.[0]?.toUpperCase() || '👤'}
+              </div>
+              <div>
+                <h4 style={{ color: '#fff', margin: 0, letterSpacing: '-0.3px' }}>
+                  Welcome back, {student.name.split(' ')[0]}!
+                </h4>
+                <p className="subtitle" style={{ margin: 0 }}>
+                  {student.branch} &nbsp;·&nbsp; CGPA:&nbsp;
+                  <strong style={{ color: '#7cb9ff' }}>{student.cgpa}</strong>
+                </p>
+              </div>
             </div>
-            <div className="d-flex gap-2">
-              <Link to="/student/companies" className="btn btn-sm fw-semibold" style={{ background: '#5378ff', color: '#fff', borderRadius: '30px', padding: '6px 18px' }}>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <Link to="/student/companies" className="ph-btn ph-btn-primary ph-btn-sm">
                 Browse Companies
               </Link>
-              <Link to="/student/applications" className="btn btn-sm btn-outline-light" style={{ borderRadius: '30px', padding: '6px 18px' }}>
+              <Link to="/student/applications" className="ph-btn ph-btn-sm"
+                style={{ background: 'rgba(255,255,255,0.12)', color: '#fff', border: '1px solid rgba(255,255,255,0.22)' }}>
                 My Applications
               </Link>
             </div>
@@ -73,71 +92,138 @@ const StudentDashboard = () => {
       </div>
 
       <div className="container py-4">
+
         {/* Stat cards */}
         <div className="row g-3 mb-4">
-          <StatCard icon="📋" label="Total Applications" value={stats.totalApplications} color="#5378ff" />
-          <StatCard icon="📌" label="Shortlisted" value={stats.shortlisted} color="#f59e0b" />
-          <StatCard icon="🏆" label="Selected" value={stats.selected} color="#10b981" />
-          <StatCard icon="🏢" label="Eligible Companies" value={stats.eligibleCompanies} color="#6366f1" subtext="Based on your CGPA" />
+          <StatCard icon="📋" label="Total Applications" value={stats.totalApplications} color="#4f62d4" />
+          <StatCard icon="📌" label="Shortlisted"         value={stats.shortlisted}       color="#d97706" />
+          <StatCard icon="🏆" label="Selected"            value={stats.selected}          color="#059669" />
+          <StatCard icon="🏢" label="Eligible Companies"  value={stats.eligibleCompanies} color="#7c3aed" subtext="Based on your CGPA" />
         </div>
 
-        {/* Profile card */}
+        {/* Content row */}
         <div className="row g-3">
+
+          {/* Profile */}
           <div className="col-lg-5">
-            <div className="card border-0 shadow-sm h-100" style={{ borderRadius: '16px' }}>
-              <div className="card-body p-4">
-                <h6 className="fw-bold mb-3" style={{ color: '#1a1a2e' }}>📄 My Profile</h6>
-                <table className="table table-borderless mb-0" style={{ fontSize: '0.9rem' }}>
-                  <tbody>
-                    {[
-                      ['Name', student.name],
-                      ['Email', student.email],
-                      ['Branch', student.branch],
-                      ['CGPA', student.cgpa],
-                    ].map(([k, v]) => (
-                      <tr key={k}>
-                        <td className="text-muted ps-0" style={{ width: '40%' }}>{k}</td>
-                        <td className="fw-semibold pe-0">{v}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+            <div className="ph-card h-100">
+              <div style={{ padding: '22px 24px' }}>
+                <div className="ph-section-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span>📄</span> My Profile
+                </div>
+
+                <div style={{
+                  background: '#f8fafc', borderRadius: 12, overflow: 'hidden',
+                  border: '1px solid #e8eef5',
+                }}>
+                  {[
+                    ['Name',   student.name],
+                    ['Email',  student.email],
+                    ['Branch', student.branch],
+                    ['CGPA',   student.cgpa],
+                  ].map(([k, v], i) => (
+                    <div key={k} className="ph-info-row" style={{ background: i % 2 === 0 ? '#f8fafc' : '#fff' }}>
+                      <span className="ph-info-key">{k}</span>
+                      <span className="ph-info-val" style={{ color: k === 'CGPA' ? cgpaColor : '#1e293b' }}>
+                        {k === 'CGPA' ? (
+                          <span style={{
+                            display: 'inline-flex', alignItems: 'center', gap: 6,
+                            padding: '2px 10px', background: cgpaBg, borderRadius: 99,
+                            fontSize: '0.82rem',
+                          }}>
+                            {v}
+                          </span>
+                        ) : v}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* CGPA bar */}
+                <div style={{ marginTop: 18 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                      Academic Standing
+                    </span>
+                    <span style={{ fontSize: '0.78rem', fontWeight: 800, color: cgpaColor, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                      {student.cgpa} / 10
+                    </span>
+                  </div>
+                  <div className="ph-progress" style={{ height: 8 }}>
+                    <div className="ph-progress-bar" style={{
+                      width: `${(cgpa / 10) * 100}%`,
+                      background: `linear-gradient(90deg, ${cgpaColor}, ${cgpaColor}bb)`,
+                    }} />
+                  </div>
+                  <div style={{ marginTop: 6, fontSize: '0.72rem', color: '#94a3b8' }}>
+                    {cgpa >= 8 ? '⭐ Excellent — eligible for most companies'
+                     : cgpa >= 6 ? '✓ Good — eligible for several companies'
+                     : '⚠ Work on improving your CGPA for more opportunities'}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Quick actions */}
+          {/* Quick actions + status guide */}
           <div className="col-lg-7">
-            <div className="card border-0 shadow-sm h-100" style={{ borderRadius: '16px' }}>
-              <div className="card-body p-4">
-                <h6 className="fw-bold mb-3" style={{ color: '#1a1a2e' }}>⚡ Quick Actions</h6>
-                <div className="row g-3">
+            <div className="ph-card h-100">
+              <div style={{ padding: '22px 24px' }}>
+                <div className="ph-section-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span>⚡</span> Quick Actions
+                </div>
+                <div className="row g-3 mb-4">
                   {[
-                    { to: '/student/companies', icon: '🏢', title: 'View Companies', desc: 'Browse all visiting companies', color: '#5378ff' },
-                    { to: '/student/applications', icon: '📋', title: 'My Applications', desc: 'Track your application status', color: '#10b981' },
+                    { to: '/student/companies',    icon: '🏢', title: 'Browse Companies', desc: 'View all visiting companies and apply', color: '#4f62d4' },
+                    { to: '/student/applications', icon: '📋', title: 'My Applications', desc: 'Track real-time status updates',         color: '#059669' },
                   ].map(item => (
-                    <div className="col-6" key={item.to}>
-                      <Link to={item.to} className="text-decoration-none">
-                        <div className="p-3 rounded-3 h-100"
-                          style={{ background: `${item.color}10`, border: `1px solid ${item.color}30`, transition: 'all 0.2s', cursor: 'pointer' }}
-                          onMouseEnter={e => e.currentTarget.style.background = `${item.color}20`}
-                          onMouseLeave={e => e.currentTarget.style.background = `${item.color}10`}>
-                          <div style={{ fontSize: '1.8rem', marginBottom: '8px' }}>{item.icon}</div>
-                          <div className="fw-semibold" style={{ color: '#1a1a2e', fontSize: '0.9rem' }}>{item.title}</div>
-                          <div className="text-muted" style={{ fontSize: '0.78rem' }}>{item.desc}</div>
+                    <div className="col-sm-6" key={item.to}>
+                      <Link to={item.to} style={{ textDecoration: 'none', display: 'block' }}>
+                        <div style={{
+                          padding: '20px 18px',
+                          background: `${item.color}08`,
+                          border: `1.5px solid ${item.color}1e`,
+                          borderRadius: 14,
+                          transition: 'all 0.2s ease',
+                          cursor: 'pointer',
+                        }}
+                          onMouseEnter={e => {
+                            e.currentTarget.style.background = `${item.color}14`;
+                            e.currentTarget.style.borderColor = `${item.color}45`;
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = `0 6px 18px ${item.color}1a`;
+                          }}
+                          onMouseLeave={e => {
+                            e.currentTarget.style.background = `${item.color}08`;
+                            e.currentTarget.style.borderColor = `${item.color}1e`;
+                            e.currentTarget.style.transform = 'none';
+                            e.currentTarget.style.boxShadow = 'none';
+                          }}
+                        >
+                          <div style={{ fontSize: '1.7rem', marginBottom: 12 }}>{item.icon}</div>
+                          <div style={{ fontWeight: 700, color: '#1e293b', fontSize: '0.9rem', marginBottom: 5 }}>{item.title}</div>
+                          <div style={{ fontSize: '0.77rem', color: '#64748b', lineHeight: 1.5 }}>{item.desc}</div>
                         </div>
                       </Link>
                     </div>
                   ))}
                 </div>
 
-                {/* Status legend */}
-                <div className="mt-4">
-                  <h6 className="fw-semibold small text-muted mb-2">APPLICATION STATUS GUIDE</h6>
-                  <div className="d-flex flex-wrap gap-2">
+                {/* Status guide */}
+                <div>
+                  <p style={{ fontSize: '0.70rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.7px', marginBottom: 10 }}>
+                    Application Status Guide
+                  </p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
                     {Object.entries(STATUS_STYLES).map(([status, style]) => (
-                      <span key={status} className="badge rounded-pill px-3 py-2"
-                        style={{ background: style.bg, color: style.color, fontSize: '0.75rem' }}>
+                      <span key={status} style={{
+                        display: 'inline-flex', alignItems: 'center', gap: 5,
+                        padding: '4px 11px',
+                        background: style.bg, color: style.color,
+                        borderRadius: 999,
+                        fontSize: '0.73rem', fontWeight: 600,
+                      }}>
+                        <span style={{ width: 6, height: 6, background: style.dot, borderRadius: '50%', flexShrink: 0 }} />
                         {status}
                       </span>
                     ))}

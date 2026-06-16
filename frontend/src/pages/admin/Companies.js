@@ -1,5 +1,4 @@
 // frontend/src/pages/admin/Companies.js
-
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '../../utils/api';
@@ -7,11 +6,11 @@ import api from '../../utils/api';
 const emptyForm = { company_name: '', role: '', package: '', min_cgpa: '', description: '' };
 
 const AdminCompanies = () => {
-  const [companies, setCompanies] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [form, setForm] = useState(emptyForm);
+  const [companies, setCompanies]   = useState([]);
+  const [loading, setLoading]       = useState(true);
+  const [form, setForm]             = useState(emptyForm);
   const [submitting, setSubmitting] = useState(false);
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm]     = useState(false);
 
   const fetchCompanies = () => {
     api.get('/admin/companies')
@@ -19,7 +18,6 @@ const AdminCompanies = () => {
       .catch(() => toast.error('Failed to load companies'))
       .finally(() => setLoading(false));
   };
-
   useEffect(() => { fetchCompanies(); }, []);
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
@@ -41,78 +39,93 @@ const AdminCompanies = () => {
   };
 
   const handleDelete = async (id, name) => {
-    if (!window.confirm(`Delete ${name}? This will also remove all related applications.`)) return;
+    if (!window.confirm(`Delete ${name}? All related applications will also be removed.`)) return;
     try {
       await api.delete(`/admin/companies/${id}`);
       toast.success(`${name} deleted.`);
       fetchCompanies();
-    } catch (err) {
+    } catch {
       toast.error('Delete failed');
     }
   };
 
   if (loading) return (
-    <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
-      <div className="spinner-border" style={{ color: '#5378ff' }} />
+    <div className="ph-loading">
+      <div className="ph-spinner" />
+      <span className="ph-loading-text">Loading companies…</span>
     </div>
   );
 
   return (
-    <div style={{ background: '#f8f9ff', minHeight: '100vh' }}>
-      <div className="py-4" style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%)', color: '#fff' }}>
-        <div className="container d-flex justify-content-between align-items-center flex-wrap gap-3">
-          <div>
-            <h4 className="fw-bold mb-1">🏢 Companies</h4>
-            <p className="mb-0 small" style={{ color: 'rgba(255,255,255,0.7)' }}>{companies.length} companies listed</p>
+    <div style={{ background: 'var(--bg-page)', minHeight: '100vh' }}>
+
+      {/* Header */}
+      <div className="ph-page-header">
+        <div className="container ph-page-header-content">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 14 }}>
+            <div>
+              <h4 style={{ color: '#fff', marginBottom: 5 }}>🏢 Companies</h4>
+              <p className="subtitle">{companies.length} companies listed for placement</p>
+            </div>
+            <button
+              className={`ph-btn ph-btn-sm ${showForm ? 'ph-btn-secondary' : 'ph-btn-primary'}`}
+              onClick={() => setShowForm(!showForm)}
+            >
+              {showForm ? '✕ Cancel' : '+ Add Company'}
+            </button>
           </div>
-          <button className="btn btn-sm fw-semibold"
-            style={{ background: '#5378ff', color: '#fff', borderRadius: '30px', padding: '6px 18px' }}
-            onClick={() => setShowForm(!showForm)}>
-            {showForm ? '✕ Cancel' : '+ Add Company'}
-          </button>
         </div>
       </div>
 
       <div className="container py-4">
-        {/* Add company form */}
+
+        {/* Add form */}
         {showForm && (
-          <div className="card border-0 shadow-sm mb-4" style={{ borderRadius: '16px', borderLeft: '4px solid #5378ff' }}>
-            <div className="card-body p-4">
-              <h6 className="fw-bold mb-4" style={{ color: '#1a1a2e' }}>➕ Add New Company</h6>
+          <div className="ph-card mb-4" style={{ borderTop: '3px solid #4f62d4', overflow: 'hidden' }}>
+            <div style={{ padding: '24px 28px' }}>
+              <div className="ph-section-title" style={{ marginBottom: 22, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span>➕</span> Add New Company
+              </div>
               <form onSubmit={handleSubmit}>
                 <div className="row g-3">
                   <div className="col-md-6">
-                    <label className="form-label fw-semibold small">Company Name *</label>
-                    <input type="text" name="company_name" className="form-control" placeholder="e.g. Google"
+                    <label className="form-label">Company Name *</label>
+                    <input type="text" name="company_name" className="form-control"
+                      placeholder="e.g. Google"
                       value={form.company_name} onChange={handleChange} required />
                   </div>
                   <div className="col-md-6">
-                    <label className="form-label fw-semibold small">Job Role *</label>
-                    <input type="text" name="role" className="form-control" placeholder="e.g. Software Engineer"
+                    <label className="form-label">Job Role *</label>
+                    <input type="text" name="role" className="form-control"
+                      placeholder="e.g. Software Engineer"
                       value={form.role} onChange={handleChange} required />
                   </div>
                   <div className="col-md-6">
-                    <label className="form-label fw-semibold small">Package (LPA) *</label>
-                    <input type="number" name="package" className="form-control" placeholder="e.g. 12.5"
+                    <label className="form-label">Package (LPA) *</label>
+                    <input type="number" name="package" className="form-control"
+                      placeholder="e.g. 12.5"
                       value={form.package} onChange={handleChange} required min="0" step="0.01" />
                   </div>
                   <div className="col-md-6">
-                    <label className="form-label fw-semibold small">Minimum CGPA *</label>
-                    <input type="number" name="min_cgpa" className="form-control" placeholder="e.g. 7.5"
+                    <label className="form-label">Minimum CGPA *</label>
+                    <input type="number" name="min_cgpa" className="form-control"
+                      placeholder="e.g. 7.5"
                       value={form.min_cgpa} onChange={handleChange} required min="0" max="10" step="0.01" />
                   </div>
                   <div className="col-12">
-                    <label className="form-label fw-semibold small">Description</label>
+                    <label className="form-label">Description</label>
                     <textarea name="description" className="form-control" rows={2}
-                      placeholder="Brief about the company and role..."
+                      placeholder="Brief description about the company and role…"
                       value={form.description} onChange={handleChange} />
                   </div>
                 </div>
-                <div className="mt-4">
-                  <button type="submit" className="btn fw-semibold px-4"
-                    style={{ background: '#5378ff', color: '#fff', borderRadius: '10px' }}
-                    disabled={submitting}>
-                    {submitting ? <><span className="spinner-border spinner-border-sm me-2" />Adding...</> : 'Add Company'}
+                <div style={{ marginTop: 22, display: 'flex', gap: 10 }}>
+                  <button type="submit" className="ph-btn ph-btn-primary" disabled={submitting}>
+                    {submitting ? <><span className="spinner-border spinner-border-sm" /> Adding…</> : 'Add Company'}
+                  </button>
+                  <button type="button" className="ph-btn ph-btn-secondary"
+                    onClick={() => { setShowForm(false); setForm(emptyForm); }}>
+                    Cancel
                   </button>
                 </div>
               </form>
@@ -120,40 +133,61 @@ const AdminCompanies = () => {
           </div>
         )}
 
-        {/* Companies table */}
-        <div className="card border-0 shadow-sm" style={{ borderRadius: '16px', overflow: 'hidden' }}>
+        {/* Table */}
+        <div className="ph-table-wrap">
           <div className="table-responsive">
-            <table className="table align-middle mb-0">
-              <thead style={{ background: '#f1f5f9' }}>
+            <table className="ph-table">
+              <thead>
                 <tr>
-                  {['#', 'Company', 'Role', 'Package', 'Min CGPA', 'Applicants', 'Actions'].map(h => (
-                    <th key={h} className="py-3 ps-3 fw-semibold" style={{ color: '#64748b', fontSize: '0.78rem', textTransform: 'uppercase' }}>{h}</th>
-                  ))}
+                  <th style={{ paddingLeft: 22 }}>#</th>
+                  <th>Company</th>
+                  <th>Role</th>
+                  <th>Package</th>
+                  <th>Min CGPA</th>
+                  <th>Applicants</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {companies.length === 0 ? (
-                  <tr><td colSpan={7} className="text-center py-5 text-muted">No companies yet. Add one above.</td></tr>
+                  <tr>
+                    <td colSpan={7} style={{ textAlign: 'center', padding: '56px', color: '#94a3b8' }}>
+                      <div style={{ fontSize: '2rem', marginBottom: 10, opacity: 0.4 }}>🏢</div>
+                      No companies yet. Click &quot;+ Add Company&quot; to get started.
+                    </td>
+                  </tr>
                 ) : companies.map((c, i) => (
-                  <tr key={c.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td className="ps-3 text-muted small">{i + 1}</td>
-                    <td className="ps-3 fw-semibold" style={{ color: '#1a1a2e' }}>{c.company_name}</td>
-                    <td className="ps-3 text-muted small">{c.role}</td>
-                    <td className="ps-3 fw-bold" style={{ color: '#5378ff' }}>₹{c.package} LPA</td>
-                    <td className="ps-3">
-                      <span className="badge" style={{ background: '#fef3c7', color: '#92400e', fontSize: '0.8rem' }}>
+                  <tr key={c.id}>
+                    <td data-label="#" style={{ paddingLeft: 22, color: '#94a3b8', fontSize: '0.8rem', fontWeight: 500 }}>{i + 1}</td>
+                    <td data-label="Company">
+                      <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '0.875rem' }}>{c.company_name}</div>
+                    </td>
+                    <td data-label="Role">
+                      <span style={{ color: '#64748b', fontSize: '0.84rem' }}>{c.role}</span>
+                    </td>
+                    <td data-label="Package">
+                      <span style={{
+                        fontFamily: "'Plus Jakarta Sans', sans-serif",
+                        fontWeight: 800, color: '#4f62d4', fontSize: '0.9rem'
+                      }}>
+                        ₹{c.package} LPA
+                      </span>
+                    </td>
+                    <td data-label="Min CGPA">
+                      <span style={{ padding: '3px 10px', background: '#fef3c7', color: '#92400e', borderRadius: 999, fontSize: '0.74rem', fontWeight: 700 }}>
                         {c.min_cgpa}+
                       </span>
                     </td>
-                    <td className="ps-3">
-                      <span className="badge rounded-pill" style={{ background: '#e0e7ff', color: '#4338ca' }}>
-                        {c.applicant_count}
+                    <td data-label="Applicants">
+                      <span style={{ padding: '3px 10px', background: '#eef0fb', color: '#4338ca', borderRadius: 999, fontSize: '0.74rem', fontWeight: 600 }}>
+                        {c.applicant_count} applied
                       </span>
                     </td>
-                    <td className="ps-3">
-                      <button className="btn btn-sm"
-                        style={{ background: '#fee2e2', color: '#991b1b', borderRadius: '8px', fontSize: '0.78rem' }}
-                        onClick={() => handleDelete(c.id, c.company_name)}>
+                    <td data-label="Actions">
+                      <button
+                        className="ph-btn ph-btn-danger ph-btn-sm"
+                        onClick={() => handleDelete(c.id, c.company_name)}
+                      >
                         Delete
                       </button>
                     </td>
